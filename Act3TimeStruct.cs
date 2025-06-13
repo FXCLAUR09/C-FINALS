@@ -1,59 +1,87 @@
 ﻿using System;
 
-struct Time
-{
-    private readonly int minutes;
-
-    public Time(int hh, int mm)
-    {
-        minutes = 60 * hh + mm;
-    }
-
-    public Time(int totalMinutes)
-    {
-        minutes = totalMinutes;
-    }
-
-    public int Hour => minutes / 60;
-    public int Minute => minutes % 60;
-
-    public override string ToString()
-    {
-        return String.Format("{0:D2}:{1:D2}", Hour, Minute);
-    }
-
-    public static Time operator +(Time t1, Time t2)
-    {
-        return new Time(t1.minutes + t2.minutes);
-    }
-
-    public static Time operator -(Time t1, Time t2)
-    {
-        return new Time(t1.minutes - t2.minutes);
-    }
-
-    public static implicit operator Time(int totalMinutes)
-    {
-        return new Time(totalMinutes);
-    }
-
-    public static explicit operator int(Time t)
-    {
-        return t.minutes;
-    }
-
-}
-   
 class Program
 {
     static void Main()
     {
-        Time t1 = new Time(1, 30);      
-        Time t2 = 90;                   
-        int mins = (int)t1;            
 
-        Console.WriteLine("t1: " + t1);        
-        Console.WriteLine("t2 (from int): " + t2);  
-        Console.WriteLine("Minutes in t1: " + mins); 
+        int[,] grades = {
+            { 85, 90, 78 },  // Student 1
+            { 88, 76, 92 },  // Student 2
+            { 90, 85, 85 },  // Student 3
+            { 75, 80, 79 },  // Student 4
+            { 95, 89, 94 }   // Student 5
+        };
+
+        int students = grades.GetLength(0);
+        int subjects = grades.GetLength(1);
+
+        Console.WriteLine("Student Grades Matrix:\r\n");
+        for (int i = 0; i < students; i++)
+        {
+            Console.Write("Student " + (i + 1) + ": ");
+            for (int j = 0; j < subjects; j++)
+            {
+                Console.Write(grades[i, j] + "\t");
+            }
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("\nAverage Grades Per Student:");
+        for (int i = 0; i < students; i++)
+        {
+            int sum = 0;
+            for (int j = 0; j < subjects; j++)
+            {
+                sum += grades[i, j];
+            }
+            double average = (double)sum / subjects;
+            Console.WriteLine("Student " + (i + 1) + ": " + average.ToString("F2"));
+        }
+
+        Console.WriteLine("\nHighest Grade Per Subject:");
+        for (int j = 0; j < subjects; j++)
+        {
+            int highest = grades[0, j];
+            for (int i = 1; i < students; i++)
+            {
+                if (grades[i, j] > highest)
+                {
+                    highest = grades[i, j];
+                }
+            }
+            Console.WriteLine("Subject " + (j + 1) + ": " + highest);
+        }
+
+        Console.WriteLine("\nLowest Grade Per Subject:");
+        for (int j = 0; j < subjects; j++)
+        {
+            int lowest = grades[0, j];
+            for (int i = 1; i < students; i++)
+            {
+                if (grades[i, j] < lowest)
+                {
+                    lowest = grades[i, j];
+                }
+            }
+            Console.WriteLine("Subject " + (j + 1) + ": " + lowest);
+        }
+
+        Console.WriteLine("\nMedian Grade Per Subject:");
+        for (int j = 0; j < subjects; j++)
+        {
+            int[] subjectGrades = new int[students];
+
+            for (int i = 0; i < students; i++)
+            {
+                subjectGrades[i] = grades[i, j];
+            }
+
+            Array.Sort(subjectGrades);
+            double median = subjectGrades[students / 2];
+
+            Console.WriteLine("Subject " + (j + 1) + ": " + median);
+        }
+
     }
 }
